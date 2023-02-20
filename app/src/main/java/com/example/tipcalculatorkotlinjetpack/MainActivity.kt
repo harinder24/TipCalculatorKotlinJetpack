@@ -3,6 +3,7 @@ package com.example.tipcalculatorkotlinjetpack
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
@@ -56,29 +57,22 @@ fun TipCalculatorScreen(){
         Text(text = stringResource(R.string.calculate_tip),fontSize = 24.sp,
             modifier = Modifier.align(Alignment.CenterHorizontally))
         Spacer(Modifier.height(16.dp))
-        EditAmountTextField(userInput, onValueChange = {userInput = it})
+        EditTextField(R.string.cost_of_service,userInput, onValueChange = {userInput = it})
 
-        EditTipTextField(tipAmount = userTipAmount, onTipChange = {userTipAmount = it})
+        EditTextField(R.string.how_was_the_service,userTipAmount, onValueChange = {userTipAmount = it})
         Text(text = stringResource(id = R.string.tip_amount, tip),fontSize = 20.sp, fontWeight = FontWeight.Bold,
             modifier = Modifier.align(Alignment.CenterHorizontally))
     }
 }
 
-@Composable
-fun EditTipTextField(tipAmount: String, onTipChange: (String) -> Unit){
-    TextField(value = tipAmount, onValueChange = onTipChange,
-        label = { Text(stringResource(R.string.how_was_the_service)) },
-        modifier = Modifier.fillMaxWidth(),
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
-}
+
 
 
 @Composable
-fun EditAmountTextField(userInput: String, onValueChange: (String) -> Unit){
+fun EditTextField(@StringRes label: Int,userInput: String, onValueChange: (String) -> Unit){
 
     TextField(value = userInput, onValueChange = onValueChange,
-        label = { Text(stringResource(R.string.cost_of_service)) },
+        label = { Text(stringResource(label)) },
         modifier = Modifier.fillMaxWidth(),
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
