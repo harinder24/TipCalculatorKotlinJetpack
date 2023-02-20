@@ -42,20 +42,40 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TipCalculatorScreen(){
     var userInput by remember { mutableStateOf("")}
-    var amount = userInput.toDoubleOrNull() ?: 0.0
-    var tip = tipCalculator(amount)
+    val amount = userInput.toDoubleOrNull() ?: 0.0
+
+    var userTipAmount by remember {
+        mutableStateOf("")
+    }
+    val userTipInDouble = userTipAmount.toDoubleOrNull() ?: 0.0
+
+    val tip = tipCalculator(amount, userTipInDouble)
+
+
     Column(modifier = Modifier.padding(36.dp), verticalArrangement = Arrangement.spacedBy(8.dp)){
         Text(text = stringResource(R.string.calculate_tip),fontSize = 24.sp,
             modifier = Modifier.align(Alignment.CenterHorizontally))
         Spacer(Modifier.height(16.dp))
-        EditTextField(userInput, onValueChange = {userInput = it})
+        EditAmountTextField(userInput, onValueChange = {userInput = it})
+
+        EditTipTextField(tipAmount = userTipAmount, onTipChange = {userTipAmount = it})
         Text(text = stringResource(id = R.string.tip_amount, tip),fontSize = 20.sp, fontWeight = FontWeight.Bold,
             modifier = Modifier.align(Alignment.CenterHorizontally))
     }
 }
 
 @Composable
-fun EditTextField(userInput: String, onValueChange: (String) -> Unit){
+fun EditTipTextField(tipAmount: String, onTipChange: (String) -> Unit){
+    TextField(value = tipAmount, onValueChange = onTipChange,
+        label = { Text(stringResource(R.string.how_was_the_service)) },
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
+}
+
+
+@Composable
+fun EditAmountTextField(userInput: String, onValueChange: (String) -> Unit){
 
     TextField(value = userInput, onValueChange = onValueChange,
         label = { Text(stringResource(R.string.cost_of_service)) },
@@ -64,9 +84,11 @@ fun EditTextField(userInput: String, onValueChange: (String) -> Unit){
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
 
 
+
+
 }
 
-fun tipCalculator(amount: Double, tipPercentage: Double = 15.00): String {
+fun tipCalculator(amount: Double, tipPercentage: Double): String {
 
         val tipAmount =  tipPercentage/100.00 * amount
     return NumberFormat.getCurrencyInstance().format(tipAmount)
